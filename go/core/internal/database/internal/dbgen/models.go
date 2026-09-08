@@ -102,6 +102,7 @@ type RuntimeRevision struct {
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 	AgentCard             []byte
+	DeletionStartedAt     *time.Time
 }
 
 type Tool struct {
