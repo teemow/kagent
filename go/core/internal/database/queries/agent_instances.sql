@@ -13,17 +13,12 @@ WHERE p.namespace = sqlc.arg(harness_namespace)
   AND p.retired_at IS NULL;
 
 -- name: InsertAgentInstance :one
-INSERT INTO agent_instance (id, user_id, request_id, context_id, prepared_revision, state, operation, labels, data) VALUES ($1, $2, $3, $4, $5, 'CREATING', 'CREATE', $6, $7)
+INSERT INTO agent_instance (id, user_id, request_id, context_id, prepared_revision, source_checkpoint_id, state, operation, labels, data) VALUES ($1, $2, $3, $4, $5, sqlc.narg(source_checkpoint_id)::uuid, 'CREATING', 'CREATE', $6, $7)
 ON CONFLICT (user_id, request_id) DO NOTHING
 RETURNING *;
 
 -- name: InsertA2AContext :exec
 INSERT INTO a2a_context (id, user_id) VALUES ($1, $2);
-
--- name: InsertForkedAgentInstance :one
-INSERT INTO agent_instance (id, user_id, request_id, context_id, prepared_revision, source_checkpoint_id, state, operation, labels, data) VALUES ($1, $2, $3, $4, $5, $6, 'CREATING', 'CREATE', $7, $8)
-ON CONFLICT (user_id, request_id) DO NOTHING
-RETURNING *;
 
 -- name: GetAgentInstanceByID :one
 SELECT * FROM agent_instance WHERE id = $1;
